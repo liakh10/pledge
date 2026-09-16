@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script src="/config.js"></script>
+<title>Pledge</title>
+<meta name="description" content="Pledge. Coins that launch when they are funded. Robinhood Chain, Pons.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f7f9;--card:#ffffff;--line:#e3e6ea;--ink:#0f1419;--dim:#5b6470;--soft:#eef1f5;--blue:#2f6bff;--blue2:#e8efff;--ok:#14a35a;--warn:#d9822b;--bad:#d43f3f;
+  --d:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif;--m:'Roboto Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--d);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+.in{width:min(1120px,100%);margin:0 auto;padding:0 clamp(16px,3vw,32px)}
+/* nav */
+.nav{position:sticky;top:0;z-index:20;background:rgba(246,247,249,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .in{display:flex;align-items:center;gap:18px;height:60px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;letter-spacing:-.02em}
+.logo i{width:26px;height:26px;border-radius:8px;background:var(--blue);display:grid;place-items:center;color:#fff;font-size:14px;font-weight:700;font-style:normal}
+.nav nav{display:flex;gap:18px;margin-left:8px;color:var(--dim);font-weight:500;font-size:14px}
+.nav nav a:hover{color:var(--ink)}
+.sp{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:600;font-size:14px;white-space:nowrap;transition:background .12s,border-color .12s}
+.btn:hover{border-color:#c9ced6}
+.btn.em{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.em:hover{background:#255ce6}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.sm{height:34px;padding:0 12px;font-size:13px;border-radius:8px}
+.btn img{width:16px;height:16px}
+.btn.em img{filter:brightness(0) invert(1)}
+/* hero */
+.hero{padding:clamp(40px,7vw,88px) 0 clamp(24px,4vw,40px)}
+.hero .in{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:clamp(24px,4vw,56px);align-items:start}
+h1{font-size:clamp(38px,5.6vw,68px);line-height:1.02;letter-spacing:-.035em;font-weight:700}
+h1 em{font-style:normal;color:var(--blue)}
+.lead{margin-top:18px;font-size:17px;color:var(--dim);max-width:52ch}
+.lead b{color:var(--ink);font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:28px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.stat b{display:block;font-size:24px;letter-spacing:-.02em;font-weight:700;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--dim);font-weight:500;letter-spacing:.02em;text-transform:uppercase}
+/* ticket: start a pledge */
+.ticket{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 10px 30px rgba(15,20,25,.05)}
+.ticket h2{font-size:18px;letter-spacing:-.01em}
+.ticket p{color:var(--dim);font-size:13px;margin-top:4px}
+.f{display:grid;gap:10px;margin-top:16px}
+.f label{display:grid;gap:5px;font-size:12px;font-weight:600;color:var(--dim)}
+.f input,.f select,.f textarea{height:42px;border:1px solid var(--line);border-radius:10px;padding:0 12px;background:#fff;min-width:0;width:100%}
+.f textarea{height:auto;padding:10px 12px;resize:vertical;min-height:64px}
+.f input:focus,.f select:focus,.f textarea:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue2)}
+.f .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.f .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.calc{margin-top:12px;background:var(--soft);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--dim);display:grid;gap:4px}
+.calc div{display:flex;justify-content:space-between;gap:12px}
+.calc b{color:var(--ink);font-family:var(--m);font-weight:500;font-size:12.5px}
+.msg{font-size:13px;margin-top:10px;min-height:18px;word-break:break-word}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+/* sections */
+section{padding:clamp(24px,4vw,44px) 0}
+.h{display:flex;align-items:baseline;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.h h2{font-size:22px;letter-spacing:-.02em}
+.h small{color:var(--dim);font-size:13px}
+.h .sp{flex:1}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:500;cursor:pointer;color:var(--dim)}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+/* pledge rows */
+.rows{display:grid;gap:8px}
+.row{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,2fr) repeat(3,minmax(0,.8fr)) 110px;gap:16px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;transition:border-color .12s,transform .12s}
+.row:hover{border-color:#c9ced6;transform:translateY(-1px)}
+.row .nm{display:flex;align-items:center;gap:12px;min-width:0}
+.row .av{width:38px;height:38px;border-radius:10px;background:var(--soft);flex:none;display:grid;place-items:center;font-weight:700;color:var(--dim);overflow:hidden}
+.row .av img{width:100%;height:100%;object-fit:cover}
+.row .nm b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .nm span{display:block;font-size:12px;color:var(--dim);font-family:var(--m)}
+.bar{height:8px;border-radius:999px;background:var(--soft);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--blue);border-radius:999px;transition:width .4s}
+.bar.done i{background:var(--ok)}
+.bar.miss i{background:#c9ced6}
+.pv{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-top:6px;font-family:var(--m)}
+.pv b{color:var(--ink);font-weight:500}
+.kv b{display:block;font-weight:600;font-variant-numeric:tabular-nums}
+.kv span{font-size:12px;color:var(--dim)}
+.st{justify-self:end;font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;background:var(--soft);color:var(--dim);white-space:nowrap}
+.st.funding{background:var(--blue2);color:var(--blue)}
+.st.launched{background:#e4f7ec;color:var(--ok)}
+.st.missed{background:#f3f4f6;color:#8a93a0}
+.st.funded{background:#fff3e6;color:var(--warn)}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:14px;padding:28px;text-align:center;color:var(--dim);font-size:14px}
+/* rules as a ledger */
+.ledger{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cell{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.cell h3{font-size:15px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.cell h3 i{width:22px;height:22px;border-radius:7px;background:var(--blue2);color:var(--blue);display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;font-family:var(--m)}
+.cell p{color:var(--dim);font-size:14px}
+.cell dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin-top:10px;font-size:13px}
+.cell dt{color:var(--dim)}.cell dd{font-family:var(--m);font-size:12.5px}
+/* the tool: chest gauge */
+.tool{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+.tool h2{font-size:20px;letter-spacing:-.02em}
+.tool p{color:var(--dim);font-size:14px;margin-top:6px}
+.gauge{margin-top:16px;position:relative;height:120px;border-radius:12px;background:var(--soft);overflow:hidden}
+.gauge .lv{position:absolute;left:0;bottom:0;width:100%;background:linear-gradient(180deg,#6d95ff,var(--blue));transition:height .5s}
+.gauge .mk{position:absolute;left:0;width:100%;border-top:2px dashed var(--ink);opacity:.55}
+.gauge .mk span{position:absolute;right:8px;top:4px;font-size:11px;font-family:var(--m);background:#fff;padding:1px 6px;border-radius:5px}
+.gauge .cur{position:absolute;left:8px;bottom:8px;font-size:12px;font-family:var(--m);background:#fff;padding:2px 7px;border-radius:6px}
+.tool .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.tool .k{background:var(--soft);border-radius:12px;padding:12px 14px}
+.tool .k b{display:block;font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.tool .k span{font-size:12px;color:var(--dim)}
+/* feed */
+.feed{display:grid;gap:6px}
+.ev{display:grid;grid-template-columns:90px 1fr auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:14px}
+.ev .k{font-size:12px;font-weight:600;padding:3px 8px;border-radius:999px;background:var(--soft);text-align:center;color:var(--dim)}
+.ev .k.launched{background:#e4f7ec;color:var(--ok)}.ev .k.backed{background:var(--blue2);color:var(--blue)}.ev .k.defended{background:#fff3e6;color:var(--warn)}
+.ev .t{color:var(--dim);font-size:12px;font-family:var(--m)}
+.ev code{font-family:var(--m);font-size:12.5px}
+/* proof */
+.proof{background:var(--ink);color:#e9edf2;border-radius:18px;padding:24px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center}
+.proof h2{font-size:20px;letter-spacing:-.02em}
+.proof p{color:#98a2b3;font-size:14px;margin-top:6px}
+.proof .adr{display:grid;gap:8px;margin-top:14px}
+.proof .adr div{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:13px}
+.proof .adr span{color:#98a2b3;width:110px}
+.proof .adr a,.proof .adr code{font-family:var(--m);font-size:12.5px;color:#e9edf2;word-break:break-all}
+.proof .adr a:hover{text-decoration:underline}
+.proof .ca{font-family:var(--m);font-size:clamp(13px,2vw,16px);color:#fff;word-break:break-all}
+.proof .ca.soon{font-family:var(--d);font-size:34px;font-weight:700;letter-spacing:-.02em;color:#fff}
+.proof .acts{display:grid;gap:8px}
+.proof .btn{background:#1c2430;border-color:#2b3543;color:#fff}
+.proof .btn.em{background:#fff;color:var(--ink);border-color:#fff}
+.proof .btn.em img{filter:none}
+footer{padding:28px 0 40px;color:var(--dim);font-size:12.5px;border-top:1px solid var(--line);margin-top:20px}
+footer .in{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+/* modal for wallets */
+.md{position:fixed;inset:0;z-index:50;background:rgba(15,20,25,.45);display:none;place-items:center;padding:16px}
+.md.on{display:grid}
+.mdin{background:var(--card);border-radius:16px;padding:18px;width:min(380px,100%);display:grid;gap:8px}
+.mdin h3{font-size:16px;margin-bottom:4px}
+.mdin button{display:flex;align-items:center;gap:10px;height:44px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;text-align:left}
+.mdin button img{width:22px;height:22px;border-radius:5px}
+@media (max-width:900px){
+  .hero .in{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .row{grid-template-columns:1fr 1fr;gap:10px}
+  .row .nm{grid-column:1/-1}
+  .row .prog{grid-column:1/-1}
+  .st{justify-self:start}
+  .ledger{grid-template-columns:1fr}
+  .tool{grid-template-columns:1fr}
+  .proof{grid-template-columns:1fr}
+  .nav nav{display:none}
+  .ev{grid-template-columns:1fr auto}
+  .ev .k{grid-column:1/-1;justify-self:start}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="nav"><div class="in">
+  <a class="logo" href="/"><i>P</i><span data-name>Pledge</span></a>
+  <nav><a href="#pledges">Pledges</a><a href="#chest">Chest</a><a href="#proof">Proof</a><a href="/docs">Docs</a></nav>
+  <span class="sp"></span>
+  <a class="btn sm" data-link="x" href="https://x.com/soon" aria-label="X"><img src="/assets/x.svg" alt="X"></a>
+  <button class="btn sm" id="connect">Connect wallet</button>
+</div></header>
+
+<section class="hero"><div class="in">
+  <div>
+    <h1>Coins that launch<br>when they are <em>funded</em></h1>
+    <p class="lead">Set a goal in ETH and a window. Backers put ETH in. The moment the goal is met, anyone can press launch: the coin goes live on Pons, half of the raise buys the first coins for the backers, the other half becomes a <b>chest</b> that buys and burns whenever the curve drops below where it opened. Miss the goal and everyone takes their ETH back.</p>
+    <div class="stats">
+      <div class="stat"><b id="s-count">—</b><span>pledges</span></div>
+      <div class="stat"><b id="s-raised">—</b><span>ETH pledged</span></div>
+      <div class="stat"><b id="s-launched">—</b><span>launched</span></div>
+      <div class="stat"><b id="s-chest">—</b><span>ETH in chests</span></div>
+    </div>
+  </div>
+  <div class="ticket">
+    <h2>Start a pledge</h2>
+    <p>Free to create. The Pons launch fee is paid out of the raise when it launches</p>
+    <div class="f">
+      <div class="two">
+        <label>Name<input id="f-name" maxlength="32" placeholder="Night Shift" autocomplete="off"></label>
+        <label>Ticker<input id="f-symbol" maxlength="10" placeholder="SHIFT" autocomplete="off" style="text-transform:uppercase"></label>
+      </div>
+      <div class="three">
+        <label>Goal, ETH<input id="f-goal" type="number" step="0.05" min="0.25" value="0.5"></label>
+        <label>Window<select id="f-window"><option value="21600">6 hours</option><option value="86400" selected>24 hours</option><option value="259200">3 days</option><option value="604800">7 days</option></select></label>
+        <label>Creator tax<select id="f-tax"><option value="100">1%</option><option value="200">2%</option><option value="300" selected>3%</option><option value="500">5%</option></select></label>
+      </div>
+      <label>Logo URL<input id="f-logo" placeholder="https://…/logo.png" autocomplete="off"></label>
+      <label>One line<textarea id="f-desc" maxlength="200" placeholder="what this coin is"></textarea></label>
+    </div>
+    <div class="calc" id="calc"></div>
+    <div class="msg" id="f-msg"></div>
+    <button class="btn em" id="create" style="width:100%;margin-top:10px;height:44px">Create pledge</button>
+  </div>
+</div></section>
+
+<section id="pledges"><div class="in">
+  <div class="h"><h2>Pledges</h2><small id="p-note"></small><span class="sp"></span>
+    <div class="chips" id="filters"><button class="chip on" data-f="all">All</button><button class="chip" data-f="funding">Funding</button><button class="chip" data-f="launched">Launched</button><button class="chip" data-f="missed">Missed</button></div></div>
+  <div class="rows" id="rows"><div class="empty">reading the chain…</div></div>
+</div></section>
+
+<section><div class="in">
+  <div class="ledger">
+    <div class="cell"><h3><i>1</i>Fund</h3><p>Backers send ETH until the goal is reached. Anything over the goal is refunded in the same transaction. The window is fixed at creation.</p>
+      <dl><dt>goal</dt><dd>0.25 ETH or more</dd><dt>window</dt><dd>1 hour to 7 days</dd><dt>over the goal</dt><dd>refunded at once</dd></dl></div>
+    <div class="cell"><h3><i>2</i>Launch</h3><p>Once funded, anyone can launch. The pledge pays the Pons fee, launches the coin with itself as fee recipient and buys the first coins with half of the raise. Backers claim pro rata.</p>
+      <dl><dt>first buy</dt><dd>(raise − fee) / 2</dd><dt>coins</dt><dd>split by what each backed</dd><dt>creator tax</dt><dd>1 to 5%, set by creator</dd></dl></div>
+    <div class="cell"><h3><i>3</i>Chest</h3><p>The other half stays in the pledge as a chest, refilled by 90% of the creator fees Pons pays. When the curve's reserve is below its opening level, anyone can make the chest buy and burn.</p>
+      <dl><dt>per defend</dt><dd>up to 0.05 ETH</dd><dt>bought coins</dt><dd>sent to 0x…dEaD</dd><dt>to $PLEDGE burner</dt><dd>10% of fees</dd></dl></div>
+  </div>
+</div></section>
+
+<section id="chest"><div class="in">
+  <div class="tool">
+    <div>
+      <h2>Chest gauge</h2>
+      <p>Pick a launched pledge. The gauge reads the Pons curve directly: where the reserve opened, where it is now, and how many defends the chest can still afford.</p>
+      <div class="f" style="margin-top:14px"><label>Pledge<select id="g-pick"><option value="">nothing launched yet</option></select></label></div>
+      <div class="grid">
+        <div class="k"><b id="g-chest">—</b><span>ETH in the chest</span></div>
+        <div class="k"><b id="g-defends">—</b><span>defends it can afford</span></div>
+        <div class="k"><b id="g-burned">—</b><span>coins burned so far</span></div>
+        <div class="k"><b id="g-owed">—</b><span>ETH owed by Pons, uncollected</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="gauge" id="gauge"><div class="lv" style="height:0%"></div><div class="mk" style="top:40%"><span>opened</span></div><div class="cur">—</div></div>
+      <div class="msg" id="g-msg" style="margin-top:10px"></div>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="btn sm" id="g-defend" disabled>Defend now</button><button class="btn sm" id="g-run" disabled>Sweep and collect</button><a class="btn sm" id="g-open" href="#" hidden>Open pledge</a></div>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="in">
+  <div class="h"><h2>Activity</h2><small id="a-note">last 24 hours, from event logs</small></div>
+  <div class="feed" id="feed"><div class="empty">nothing yet</div></div>
+</div></section>
+
+<section id="proof"><div class="in">
+  <div class="proof">
+    <div>
+      <h2>Proof</h2>
+      <p>Two contracts, no owner over the money. The factory can only rotate the burner address with a 48 hour notice. A pledge has no function that moves the raise or the chest anywhere except the launch, the refund and the burn.</p>
+      <div class="adr">
+        <div><span>factory</span><a id="p-factory" target="_blank" rel="noopener">not deployed yet</a></div>
+        <div><span>burner</span><a id="p-burner" target="_blank" rel="noopener">not deployed yet</a></div>
+        <div><span>Pons factory</span><a href="https://robinhoodchain.blockscout.com/address/0x7eD598BcEf8bd9Edd8C97A195C6d13f40801EC7e" target="_blank" rel="noopener">0x7eD598BcEf8bd9Edd8C97A195C6d13f40801EC7e</a></div>
+        <div><span data-ticker>$PLEDGE</span><span class="ca soon" id="ca" style="width:auto">soon</span></div>
+      </div>
+    </div>
+    <div class="acts">
+      <button class="btn em" id="copy"><img src="/assets/pons.png" alt="" style="display:none">Copy contract</button>
+      <a class="btn" data-link="pons" target="_blank" rel="noopener"><img src="/assets/pons.png" alt="">Buy on Pons</a>
+      <a class="btn" data-link="dex" target="_blank" rel="noopener">Chart</a>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="in"><span><b data-name>Pledge</b> · Robinhood Chain · Pons</span><span>Backing a pledge is buying coins on a bonding curve through a contract. Nothing here is advice.</span></div></footer>
+
+<div class="md" id="md"><div class="mdin"><h3>Choose a wallet</h3><div id="wl"></div></div></div>
+
+<script type="module">
+import * as W from '/lib/wallet.js';
+import { explorer } from '/lib/chains.js';
+import * as P from '/lib/pledge.js';
+import { parseEther, formatEther } from 'https://cdn.jsdelivr.net/npm/viem@2.21.55/+esm';
+
+const $ = id => document.getElementById(id);
+const S = window.SITE, CA = (S.CA || 'SOON').trim(), HAS = /^0x[0-9a-fA-F]{40}$/.test(CA);
+document.querySelectorAll('[data-name]').forEach(e => e.textContent = S.NAME);
+document.querySelectorAll('[data-ticker]').forEach(e => e.textContent = S.TICKER);
+document.querySelectorAll('[data-link="x"]').forEach(a => a.href = S.X_URL || 'https://x.com/soon');
+document.querySelectorAll('[data-link="pons"]').forEach(a => a.href = HAS ? window.PONS_HOME + '/' + CA : window.PONS_HOME);
+document.querySelectorAll('[data-link="dex"]').forEach(a => a.href = HAS ? window.DEX_HOME + '/' + CA : window.DEX_HOME);
+if (HAS) { $('ca').textContent = CA; $('ca').classList.remove('soon'); }
+$('copy').onclick = () => { if (!HAS) { $('copy').textContent = 'not yet'; } else { navigator.clipboard && navigator.clipboard.writeText(CA); $('copy').textContent = 'copied'; } setTimeout(() => $('copy').textContent = 'Copy contract', 1200); };
+const link = (kind, v, txt) => `<a href="${explorer(P.CHAIN, kind, v)}" target="_blank" rel="noopener">${txt || v}</a>`;
+if (P.FACTORY) $('p-factory').outerHTML = link('address', P.FACTORY);
+if (P.BURNER) $('p-burner').outerHTML = link('address', P.BURNER);
+
+/* wallet */
+function paintWallet() { const w = W.state(); $('connect').textContent = w.address ? W.short(w.address) : 'Connect wallet'; }
+$('connect').onclick = async () => {
+  if (W.state().address) { W.disconnect(); return; }
+  const list = W.wallets();
+  if (list.length <= 1) return W.connect(list[0] && list[0].id).then(paintWallet).catch(e => alert(e.shortMessage || e.message));
+  $('wl').innerHTML = list.map(w => `<button data-id="${w.id}">${w.icon ? `<img src="${w.icon}" alt="">` : ''}${w.name}</button>`).join('');
+  $('md').classList.add('on');
+};
+$('wl').onclick = e => { const b = e.target.closest('button'); if (!b) return; $('md').classList.remove('on'); W.connect(b.dataset.id).then(paintWallet).catch(err => alert(err.shortMessage || err.message)); };
+$('md').onclick = e => { if (e.target === $('md')) $('md').classList.remove('on'); };
+W.onChange(paintWallet); W.restore().then(paintWallet);
+
+/* create: the calculator shows exactly what the contract will do with the raise */
+let fee = P.LAUNCH_FEE;
+P.pub.readContract({ address: P.PONS, abi: P.PONS_ABI, functionName: 'launchFee' }).then(v => { fee = v; calc(); }).catch(() => {});
+function calc() {
+  const g = Number($('f-goal').value || 0);
+  if (!(g >= 0.25)) { $('calc').innerHTML = '<div><span>goal below the 0.25 ETH minimum</span></div>'; return; }
+  const goal = parseEther(String(g)), first = (goal - fee) / 2n, chest = goal - fee - first;
+  $('calc').innerHTML = `<div><span>Pons launch fee</span><b>${P.eth(fee)} ETH</b></div><div><span>first buy for backers</span><b>${P.eth(first)} ETH</b></div><div><span>chest at launch</span><b>${P.eth(chest)} ETH</b></div><div><span>defends the chest affords at 0.05</span><b>${Number(chest / 50000000000000000n)}</b></div>`;
+}
+$('f-goal').oninput = calc; calc();
+$('create').onclick = async () => {
+  const m = $('f-msg'); m.className = 'msg';
+  try {
+    if (!P.FACTORY) throw Error('The factory is not deployed yet');
+    const name = $('f-name').value.trim(), symbol = $('f-symbol').value.trim().toUpperCase();
+    if (!name || name.length > 32) throw Error('Name: 1 to 32 characters');
+    if (!/^[A-Z0-9]{1,10}$/.test(symbol)) throw Error('Ticker: 1 to 10 letters or digits');
+    const goal = parseEther(String(Number($('f-goal').value || 0)));
+    if (goal < parseEther('0.25')) throw Error('Goal: at least 0.25 ETH');
+    $('create').disabled = true; m.textContent = 'confirm in wallet…';
+    const tx = await W.send(P.CHAIN, { address: P.FACTORY, abi: P.FACTORY_ABI, functionName: 'create', args: [name, symbol, $('f-logo').value.trim(), $('f-desc').value.trim(), goal, BigInt($('f-window').value), Number($('f-tax').value)] });
+    m.innerHTML = `sent · ${link('tx', tx.hash, 'view')} · waiting…`;
+    const rc = await tx.wait();
+    if (rc.status !== 'success') throw Error('Transaction failed');
+    m.className = 'msg ok'; m.textContent = 'created, loading…';
+    await load();
+    const mine = ALL.find(p => p.creator && p.creator.toLowerCase() === W.state().address.toLowerCase() && p.symbol === symbol);
+    if (mine) location.href = '/p/' + mine.address;
+  } catch (e) { m.className = 'msg bad'; m.textContent = e.shortMessage || e.message || String(e); }
+  $('create').disabled = false;
+};
+
+/* list */
+let ALL = [], FILTER = 'all';
+const status = p => p.phase === 1 ? 'launched' : p.phase === 2 ? 'missed' : p.raised >= p.goal ? 'funded' : (p.deadline < Date.now() / 1000 ? 'missed' : 'funding');
+function rowHtml(p) {
+  const st = status(p), cls = p.phase === 1 ? 'done' : st === 'missed' ? 'miss' : '';
+  return `<a class="row" href="/p/${p.address}">
+    <div class="nm"><div class="av">${p.logo ? `<img src="${p.logo.replace(/"/g, '')}" alt="" onerror="this.remove()">` : (p.symbol || '?').slice(0, 2)}</div><div style="min-width:0"><b>${esc(p.name)}</b><span>$${esc(p.symbol)}</span></div></div>
+    <div class="prog"><div class="bar ${cls}"><i style="width:${Math.min(100, p.pct)}%"></i></div><div class="pv"><b>${P.eth(p.raised)} ETH</b><span>of ${P.eth(p.goal)}</span></div></div>
+    <div class="kv"><b>${p.nBackers}</b><span>backers</span></div>
+    <div class="kv"><b>${p.taxBps / 100}%</b><span>creator tax</span></div>
+    <div class="kv"><b>${p.phase === 1 ? P.eth(p.chest) + ' ETH' : p.phase === 0 ? P.left(p.deadline) : '—'}</b><span>${p.phase === 1 ? 'chest' : 'window'}</span></div>
+    <span class="st ${st}">${st === 'funded' ? 'ready to launch' : st}</span></a>`;
+}
+const esc = s => String(s || '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function paintRows() {
+  const list = ALL.filter(p => FILTER === 'all' || status(p) === FILTER || (FILTER === 'funding' && status(p) === 'funded'));
+  $('rows').innerHTML = list.length ? list.map(rowHtml).join('') : `<div class="empty">${P.FACTORY ? 'no pledges here yet' : 'the factory is not deployed yet'}</div>`;
+}
+$('filters').onclick = e => { const b = e.target.closest('.chip'); if (!b) return; FILTER = b.dataset.f; document.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === b)); paintRows(); };
+async function load() {
+  try {
+    ALL = await P.loadAll();
+    const raised = ALL.reduce((a, p) => a + p.raised, 0n), chest = ALL.reduce((a, p) => a + p.chest, 0n), launched = ALL.filter(p => p.phase === 1).length;
+    $('s-count').textContent = ALL.length; $('s-raised').textContent = P.eth(raised, 3); $('s-launched').textContent = launched; $('s-chest').textContent = P.eth(chest, 3);
+    $('p-note').textContent = ALL.length ? '' : '';
+    paintRows(); paintPick();
+  } catch (e) { $('rows').innerHTML = `<div class="empty">could not read the chain: ${esc(e.shortMessage || e.message)}</div>`; }
+}
+
+/* the gauge */
+let PICK = null;
+function paintPick() {
+  const l = ALL.filter(p => p.phase === 1);
+  $('g-pick').innerHTML = l.length ? l.map(p => `<option value="${p.address}">${esc(p.name)} · $${esc(p.symbol)}</option>`).join('') : '<option value="">nothing launched yet</option>';
+  if (l.length) { PICK = l[0]; paintGauge(); }
+}
+$('g-pick').onchange = () => { PICK = ALL.find(p => p.address === $('g-pick').value) || null; paintGauge(); };
+function paintGauge() {
+  const p = PICK; const g = $('gauge');
+  if (!p) { $('g-defend').disabled = $('g-run').disabled = true; $('g-open').hidden = true; return; }
+  const open = p.reserveLaunch, now = p.reserveNow, top = (open > now ? open : now) * 125n / 100n || 1n;
+  g.querySelector('.lv').style.height = Number(now * 100n / top) + '%';
+  g.querySelector('.mk').style.top = (100 - Number(open * 100n / top)) + '%';
+  g.querySelector('.cur').textContent = 'reserve now ' + P.eth(now, 4) + ' ETH';
+  $('g-chest').textContent = P.eth(p.chest, 4); $('g-defends').textContent = Number(p.chest / 50000000000000000n); $('g-burned').textContent = P.coins(p.totalBurnedCoins); $('g-owed').textContent = P.eth(p.escrowed, 5);
+  const below = now < open;
+  $('g-msg').className = 'msg ' + (below ? 'warn' : 'ok');
+  $('g-msg').textContent = below ? `below opening by ${P.eth(open - now, 4)} ETH, the chest can act` : `at or above opening, the chest waits`;
+  $('g-defend').disabled = !below || p.chest < 1000000000000000n; $('g-run').disabled = false; $('g-open').hidden = false; $('g-open').href = '/p/' + p.address;
+}
+async function act(fn, btn) {
+  const m = $('g-msg');
+  try { btn.disabled = true; m.className = 'msg'; m.textContent = 'confirm in wallet…'; const tx = await W.send(P.CHAIN, { address: PICK.address, abi: P.PLEDGE_ABI, functionName: fn }); m.innerHTML = `sent · ${link('tx', tx.hash, 'view')}`; await tx.wait(); await load(); }
+  catch (e) { m.className = 'msg bad'; m.textContent = e.shortMessage || e.message; btn.disabled = false; }
+}
+$('g-defend').onclick = () => act('defend', $('g-defend'));
+$('g-run').onclick = () => act('run', $('g-run'));
+
+/* feed */
+async function feed() {
+  try {
+    const r = await fetch('/api/feed').then(x => x.json());
+    if (!r.events || !r.events.length) { $('feed').innerHTML = `<div class="empty">${r.note === 'not deployed yet' ? 'the factory is not deployed yet' : 'nothing in the last 24 hours'}</div>`; return; }
+    const sym = e => e.symbol ? '$' + esc(e.symbol) : W.short(e.pledge);
+    $('feed').innerHTML = r.events.map(e => `<div class="ev"><span class="k ${e.kind}">${e.kind}</span><span>${
+      e.kind === 'created' ? `${sym(e)} opened with a ${e.goal} ETH goal` :
+      e.kind === 'backed' ? `<code>${W.short(e.backer)}</code> backed ${sym(e)} with ${Number(e.amount).toFixed(4)} ETH` :
+      e.kind === 'launched' ? `${sym(e)} launched on Pons · first buy ${Number(e.firstBuy).toFixed(4)} ETH · chest ${Number(e.chest).toFixed(4)} ETH` :
+      e.kind === 'defended' ? `${sym(e)} chest spent ${Number(e.spent).toFixed(4)} ETH, burned ${P.coins(parseEther(e.burned))} coins` :
+      `<code>${W.short(e.backer)}</code> claimed ${P.coins(parseEther(e.coins))} ${sym(e)}`
+    }</span><span class="t">${e.at ? P.ago(e.at) : ''}</span></div>`).join('');
+  } catch { $('feed').innerHTML = '<div class="empty">feed unavailable</div>'; }
+}
+load(); feed();
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+node_modules/
+.env.local
+.vercel
+contracts/node_modules/
+assets/video/*_raw.mp4
+assets/video/*_raw.png
+assets/video/key_*.png
+assets/img/*_raw.png

@@ -1,0 +1,13 @@
+name: keeper
+# No schedule until the factory is deployed: an idle keeper only wakes the function for nothing.
+# Once contracts are live, add:  schedule: [{ cron: "*/30 * * * *" }]
+on:
+  workflow_dispatch: {}
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Sweep, collect and defend every launched pledge
+        run: |
+          curl -sS --max-time 90 -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" https://pledge-ten.vercel.app/api/tick

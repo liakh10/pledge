@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script src="/config.js"></script>
+<title>Pledge · docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="How Pledge works: goals, backing, the launch on Pons, the backers' coins, the chest, and what the contracts can and cannot do.">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f7f9;--card:#ffffff;--line:#e3e6ea;--ink:#0f1419;--dim:#5b6470;--soft:#eef1f5;--blue:#2f6bff;--blue2:#e8efff;--d:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif;--m:'Roboto Mono',ui-monospace,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 var(--d);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.nav{position:sticky;top:0;z-index:20;background:rgba(246,247,249,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .in{width:min(1120px,100%);margin:0 auto;padding:0 clamp(16px,3vw,32px);display:flex;align-items:center;gap:18px;height:60px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;letter-spacing:-.02em;text-decoration:none}
+.logo i{width:26px;height:26px;border-radius:8px;background:var(--blue);display:grid;place-items:center;color:#fff;font-size:14px;font-weight:700;font-style:normal}
+.nav a.l{color:var(--dim);font-weight:500;font-size:14px;text-decoration:none}
+.page{width:min(1120px,100%);margin:0 auto;padding:0 clamp(16px,3vw,32px);display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px;align-items:start}
+nav.toc{position:sticky;top:84px;padding:32px 0}
+nav.toc ol{list-style:none;margin:0;padding:0;border-left:1px solid var(--line)}
+nav.toc a{display:block;padding:5px 0 5px 14px;margin-left:-1px;border-left:2px solid transparent;color:var(--dim);text-decoration:none;font-size:13.5px;font-weight:500}
+nav.toc a.on{color:var(--blue);border-left-color:var(--blue)}
+main{padding:32px 0 80px;min-width:0}
+h1{margin:0 0 8px;font-size:clamp(32px,4.5vw,48px);letter-spacing:-.03em;line-height:1.05}
+.lede{color:var(--dim);max-width:60ch;margin:0 0 28px;font-size:16px}
+section{scroll-margin-top:84px;padding:26px 0;border-top:1px solid var(--line)}
+section:first-of-type{border-top:0;padding-top:0}
+h2{margin:0 0 12px;font-size:24px;letter-spacing:-.02em}
+h3{margin:20px 0 8px;font-size:15px;font-weight:600}
+p{margin:0 0 12px;max-width:66ch}
+ul{margin:0 0 12px;padding-left:18px;max-width:66ch}
+li{margin-bottom:5px}
+.kv{border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden;margin:12px 0;max-width:640px}
+.kv div{display:flex;justify-content:space-between;gap:14px;padding:9px 14px;border-bottom:1px solid var(--line);font-size:13.5px}
+.kv div:last-child{border-bottom:0}
+.kv span{color:var(--dim)}
+.kv b{font-weight:500;text-align:right;font-family:var(--m);font-size:12.5px;word-break:break-word}
+pre{font:12.5px/1.6 var(--m);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;overflow-x:auto;margin:12px 0}
+.note{border-left:3px solid var(--blue);padding-left:12px;color:var(--dim);margin:14px 0;max-width:62ch}
+code{font-family:var(--m);font-size:12.5px;background:var(--soft);padding:1px 5px;border-radius:5px}
+@media (max-width:820px){.page{grid-template-columns:1fr}nav.toc{position:static;padding:20px 0 0}nav.toc ol{display:flex;flex-wrap:wrap;gap:4px;border:0}nav.toc a{border:1px solid var(--line);border-radius:999px;padding:4px 10px;margin:0}}
+</style>
+</head>
+<body>
+<header class="nav"><div class="in"><a class="logo" href="/"><i>P</i><span data-name>Pledge</span></a><a class="l" href="/#pledges">Pledges</a><a class="l" href="/docs" style="color:var(--ink)">Docs</a></div></header>
+<div class="page">
+<nav class="toc"><ol>
+  <li><a href="#what">What it is</a></li><li><a href="#fund">Funding</a></li><li><a href="#launch">Launch</a></li><li><a href="#coins">Backers' coins</a></li>
+  <li><a href="#chest">The chest</a></li><li><a href="#fees">Fees</a></li><li><a href="#miss">Missing the goal</a></li><li><a href="#contracts">Contracts</a></li><li><a href="#guardian">Guardian</a></li><li><a href="#token">$PLEDGE</a></li><li><a href="#faq">FAQ</a></li>
+</ol></nav>
+<main>
+<h1>How Pledge works</h1>
+<p class="lede">A pledge is a coin with a condition attached: it only exists if enough people want it before a deadline. The condition, the money and the launch all live in one contract on Robinhood Chain.</p>
+
+<section id="what"><h2>What it is</h2>
+<p>A creator sets a goal in ETH, a window and a creator tax. Backers send ETH into the pledge. When the goal is met, anyone can launch it: the contract pays the Pons launch fee, launches the coin on Pons V2 with itself as the fee recipient, and spends half of the raise on the first buy. Those coins are split among the backers by how much each one put in. The other half stays inside the contract as a chest.</p>
+<p>If the window closes short of the goal, the pledge is missed and every backer pulls their ETH back. Nobody else can touch it.</p>
+</section>
+
+<section id="fund"><h2>Funding</h2>
+<div class="kv">
+  <div><span>minimum goal</span><b>0.25 ETH</b></div>
+  <div><span>window</span><b>1 hour to 7 days, fixed at creation</b></div>
+  <div><span>creator tax</span><b>1% to 5%, fixed at creation</b></div>
+  <div><span>backing</span><b>any amount, several times</b></div>
+  <div><span>over the goal</span><b>refunded in the same transaction</b></div>
+  <div><span>after the goal</span><b>no more backing, only launch</b></div>
+</div>
+<p>The last backer never overpays: if 0.1 ETH is left to the goal and they send 0.3, the contract takes 0.1 and returns 0.2 before the call ends. There is no soft cap and no overfunding.</p>
+</section>
+
+<section id="launch"><h2>Launch</h2>
+<p>Launch is permissionless. Once <code>raised == goal</code>, any wallet can call <code>launch()</code> and the pledge does the following in one transaction:</p>
+<ul>
+  <li>pays the Pons launch fee from the raise</li>
+  <li>calls Pons <code>launchToken</code> with the pledge as <code>creatorFeeRecipient</code> and the creator's tax</li>
+  <li>buys coins on the new curve with <code>(raise − fee) / 2</code>, sent to itself</li>
+  <li>records the curve's reserve after that buy as the opening level</li>
+</ul>
+<div class="kv"><div><span>first buy</span><b>(raise − fee) / 2</b></div><div><span>chest</span><b>raise − fee − first buy</b></div><div><span>fee recipient on Pons</span><b>the pledge contract</b></div><div><span>launcher wallet on Pons</span><b>the pledge contract</b></div></div>
+<p class="note">Pons records the pledge, not the creator, as the coin's deployer. The creator gets no special rights on the curve and no fees in their wallet: the fees refill the chest.</p>
+</section>
+
+<section id="coins"><h2>Backers' coins</h2>
+<p>After launch each backer calls <code>claimCoins()</code> once and receives <code>coinsForBackers × backed / raised</code>. The creator has no allocation unless they backed their own pledge like everyone else. Claiming has no deadline.</p>
+</section>
+
+<section id="chest"><h2>The chest</h2>
+<p>The chest is the ETH that stays in the pledge after launch. It has one job: when the curve's real reserve is below the level it opened at, anyone can call <code>defend()</code> and the chest buys up to 0.05 ETH of the coin and sends it to <code>0x…dEaD</code>. It never sells, never pays anyone, and cannot be withdrawn.</p>
+<div class="kv"><div><span>trigger</span><b>realQuoteReserve &lt; reserve at launch</b></div><div><span>per call</span><b>min(0.05 ETH, shortfall, chest)</b></div><div><span>minimum</span><b>0.001 ETH, otherwise it waits</b></div><div><span>bought coins</span><b>0x000000000000000000000000000000000000dEaD</b></div><div><span>who can call</span><b>anyone, no reward</b></div></div>
+<p>The chest is refilled by the creator fees Pons pays the pledge (see below). Between calls it just sits there.</p>
+</section>
+
+<section id="fees"><h2>Fees</h2>
+<p>Pons charges the creator tax on every trade and credits it to the fee recipient, which is the pledge. <code>sweep()</code> moves the tax from the curve into the Pons escrow, <code>collect()</code> claims it from the escrow into the pledge. Of what arrives, 10% goes to the $PLEDGE burner and 90% stays in the chest. <code>run()</code> does sweep, collect and defend in one call, and the site's keeper calls it when there is enough to collect.</p>
+<div class="kv"><div><span>creator tax</span><b>1–5%, chosen at creation</b></div><div><span>to the chest</span><b>90% of what is collected</b></div><div><span>to the $PLEDGE burner</span><b>10% of what is collected</b></div><div><span>to the creator's wallet</span><b>nothing</b></div></div>
+</section>
+
+<section id="miss"><h2>Missing the goal</h2>
+<p>When the window closes and the goal is not met, <code>refund()</code> becomes available to each backer for exactly what they put in. The first refund marks the pledge as missed. There is no fee on the way out. A funded pledge cannot be refunded, only launched.</p>
+</section>
+
+<section id="contracts"><h2>Contracts</h2>
+<pre>PledgeFactory   creates pledges as clones, lists them, holds the burner address
+Pledge          one per coin: raise, launch, claims, chest, fee collection
+Pons V2         0x7eD598BcEf8bd9Edd8C97A195C6d13f40801EC7e  (factory)
+Pons escrow     0xd3AFEB2a57f70eF218Aa82451c51B2fb0416Ac9e</pre>
+<p>A pledge has no function that sends ETH anywhere except: the launch fee to Pons, the first buy to the curve, refunds to backers, defends to the curve with the coins going to dead, and the burner's tenth on collect. There is no withdraw, rescue or owner.</p>
+<p>The contracts were tested against a fork of Robinhood Chain mainnet: the real Pons factory and escrow, real trades on the new curve, the sells that drop the reserve, the defend, the miss and refund path, and the burner rotation.</p>
+</section>
+
+<section id="guardian"><h2>Guardian</h2>
+<p>The factory has a guardian, the wallet that deployed it. It can do one thing: propose a new burner address, which activates after 48 hours and only for pledges created after that. It cannot pause, cannot change goals or windows, cannot touch a pledge's ETH, and cannot change where an existing pledge sends its tenth.</p>
+</section>
+
+<section id="token"><h2>$PLEDGE</h2>
+<p>$PLEDGE launches on Pons like any other coin. The burner receives a tenth of every pledge's collected fees and spends it on $PLEDGE sent to the dead address. Until the token is set on the burner, it simply holds the ETH.</p>
+<div class="kv"><div><span>chain</span><b>Robinhood Chain</b></div><div><span>launchpad</span><b>Pons</b></div><div><span>contract</span><b id="ca">soon</b></div></div>
+</section>
+
+<section id="faq"><h2>FAQ</h2>
+<h3>Can the creator take the raise?</h3><p>No. The raise only leaves the contract as the launch fee, the first buy, or refunds.</p>
+<h3>Who pays for the launch?</h3><p>The raise. The creator pays nothing to create a pledge except gas.</p>
+<h3>What if nobody presses launch?</h3><p>A funded pledge stays launchable forever. The site's keeper presses it if nobody else does.</p>
+<h3>Can I back with less than the minimum?</h3><p>There is no minimum per backer, only a minimum goal.</p>
+<h3>What does the chest do when the curve graduates?</h3><p>After graduation the curve stops trading and <code>defend()</code> reverts on it, so the chest holds what it has. Fees already in the escrow are still collectable.</p>
+</section>
+</main>
+</div>
+<script>
+document.querySelectorAll('[data-name]').forEach(e => e.textContent = window.SITE.NAME);
+const CA = (window.SITE.CA || 'SOON').trim(); if (/^0x[0-9a-fA-F]{40}$/.test(CA)) document.getElementById('ca').textContent = CA;
+const links = [...document.querySelectorAll('nav.toc a')], secs = links.map(a => document.querySelector(a.getAttribute('href')));
+const io = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id)); }); }, { rootMargin: '-30% 0px -60% 0px' });
+secs.forEach(s => s && io.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/p/:addr",
+      "destination": "/pledge"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/config.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/lib/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "api/tick.js": {
+      "maxDuration": 60
+    },
+    "api/feed.js": {
+      "maxDuration": 30
+    }
+  }
+}
